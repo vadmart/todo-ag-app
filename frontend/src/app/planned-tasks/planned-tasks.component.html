@@ -1,0 +1,45 @@
+<ng-container>
+    <form class="input-group mb-3 w-75" [noValidate]="false" #formTaskAdd="ngForm">
+        <input type="text" class="form-control" placeholder="Введіть задачу" [(ngModel)]="enteredName" name="task-name" required>
+        <input type="date" placeholder="Оберіть дату" [(ngModel)]="selectedDate" name="task-data" [min]="currentDate | date:'yyyy-MM-dd'" required>
+        <input class="btn btn-outline-secondary" (click)="addTask()" value="Додати" type="submit" [disabled]="!formTaskAdd.valid">
+      </form>
+      <h1>Заплановані</h1>
+      <div class="tasks container-fluid">
+        <ng-container *ngIf="plannedTasks.length > 0;else container__no_content">
+          <ng-container *ngFor="let task of plannedTasks; let i=index">
+            <ng-container *ngIf="!task.completed">
+            <form class="row my-1 p-2">
+              <div class="form-check col-lg-8">
+                <input class="form-check-input" type="radio" name="task" [id]="i" [value]="task.uuid" (click)="markTaskAsCompleted(task.uuid)">
+                <div>
+                  <label class="form-check-label task__name" [htmlFor]="i">{{task.name}}</label>
+                  <ng-container *ngIf="(task.deadline.getTime() - currentDate.setHours(0, 0, 0, 0)) >= 172800000">
+                    <div class="form-text text-success"
+                      >Термін виконання: {{task.deadline.getDate()}}.{{task.deadline.getMonth() + 1}}.{{task.deadline.getFullYear()}}
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="(task.deadline.getTime() - currentDate.setHours(0, 0, 0, 0)) > 0 && (task.deadline.getTime() - currentDate.getTime()) < 172800000">
+                    <div class="form-text text-warning"
+                      >Термін виконання: {{task.deadline.getDate()}}.{{task.deadline.getMonth() + 1}}.{{task.deadline.getFullYear()}}
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="(task.deadline.getTime() - currentDate.setHours(0, 0, 0, 0)) < 0">
+                    <div class="form-text text-danger"
+                      >Термін виконання: {{task.deadline.getDate()}}.{{task.deadline.getMonth() + 1}}.{{task.deadline.getFullYear()}}
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <button class="btn btn-warning" (click)="removeTask(task.uuid)">Видалити</button>
+              </div>
+            </form>
+          </ng-container>
+        </ng-container>
+        </ng-container>
+        <ng-template #container__no_content>
+            <h4 class="fst-italic text-secondary text-center">Жодна задача не запланована</h4>
+        </ng-template>
+      </div>
+</ng-container>
