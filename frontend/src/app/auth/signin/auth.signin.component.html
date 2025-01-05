@@ -1,0 +1,11 @@
+<ng-container>
+  <div class="d-flex flex-column align-items-center">
+    <form action="/" method="post">
+        <input class="form-control" type="text" placeholder="Імʼя користувача" [value]="username">
+        <input class="form-control" type="password" placeholder="Пароль" [value]="password">
+        <input class="form-control" type="submit" value="Увійти" (click)="login()">
+        <div class="form-text text-danger" [hidden]="true">Виникла помилка</div>
+    </form>
+    <div>Ще не зареєстровані? <a href="/sign-up">Зареєструватися</a></div>
+  </div>
+</ng-container>
