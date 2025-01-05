@@ -20,15 +20,22 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 export class AuthSigninComponent {
   public username: string = "";
   public password: string = "";
+  public errorMessage: string = "";
 
   constructor(private http: HttpClient) {}
 
   login() {
-    this.http.post<Auth>("http://localhost:5000/login", {
+    this.http.post<Auth>("http://127.0.0.1:5000/login", {
       username: this.username,
       password: this.password
-    }).subscribe(data => {
-      alert(data);
+    }, {reportProgress: true, observe: 'response'}).subscribe(event => {
+      if (event.status === 200) {
+        localStorage.setItem("access", event.body!.access!);
+      } else if (event.status === 403) {
+        this.errorMessage = event.body!.details!;
+      } else {
+        this.errorMessage = "Виникла певна помилка!";
+      }
     })
   }
 }

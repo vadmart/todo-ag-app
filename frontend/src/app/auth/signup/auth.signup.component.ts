@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import Auth from '../user.type';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
@@ -29,6 +28,6 @@ export class AuthSignupComponent {
       password: this.password
     }).subscribe(data => {
       alert(data);
-    })
+    });
   }
 }

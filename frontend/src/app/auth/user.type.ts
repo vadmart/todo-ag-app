@@ -1,5 +1,6 @@
-type Auth = {
-  access: string,
-  refresh: string
+import HttpResponse from '../response.type';
+
+type AuthResponse = HttpResponse & {
+  access: string
 }
-export default Auth;
+export default AuthResponse;
