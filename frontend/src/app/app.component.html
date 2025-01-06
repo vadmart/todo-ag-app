@@ -10,10 +10,25 @@
                 id="button__completed"
                 routerLink="/completed-tasks"
                 routerLinkActive="active">Виконані задачі</a></li>
-        <li><a class="btn btn-default text-warning menu-button"
-                id="button__sign-up"
-                routerLink="/sign-up"
-                routerLinkActive="active">Зареєструватися</a></li>
+        <li>
+          <ng-container *ngIf="!!userData;else container__no_auth">
+            <div class="border-top border-warning-subtle menu-item d-flex justify-content-center align-items-center">
+              <span>{{userData.username}}</span>
+              <a class="btn text-primary"
+                  id="button__sign-out" (click)="logout()">Вихід</a>
+            </div>
+          </ng-container>
+          <ng-template #container__no_auth>
+            <a class="btn btn-default menu-button fw-bold text-secondary"
+                id="button__sign-in"
+                routerLink="/sign-in"
+                routerLinkActive="text-primary-emphasis">Вхід</a>
+            <a class="btn btn-default menu-button fw-bold text-secondary"
+                  id="button__sign-up"
+                  routerLink="/sign-up"
+                  routerLinkActive="text-primary-emphasis">Реєстрація</a>
+          </ng-template>
+        </li>
       </ul>
     </nav>
     <main class="col-lg-9 p-4">

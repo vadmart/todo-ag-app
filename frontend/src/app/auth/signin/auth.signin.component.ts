@@ -3,6 +3,8 @@ import {HttpClient} from '@angular/common/http';
 import Auth from '../user.type';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {AuthService} from '../../auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-auth-signin',
@@ -22,7 +24,7 @@ export class AuthSigninComponent {
   public password: string = "";
   public errorMessage: string = "";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router) {}
 
   login() {
     this.http.post<Auth>("http://127.0.0.1:5000/login", {
@@ -30,7 +32,8 @@ export class AuthSigninComponent {
       password: this.password
     }, {reportProgress: true, observe: 'response'}).subscribe(event => {
       if (event.status === 200) {
-        localStorage.setItem("access", event.body!.access!);
+        this.authService.setUserData(JSON.stringify(event.body!));
+        this.router.navigate(["/planned-tasks"]);
       } else if (event.status === 403) {
         this.errorMessage = event.body!.details!;
       } else {
