@@ -24,21 +24,20 @@ export class AuthSigninComponent {
   public password: string = "";
   public errorMessage: string = "";
 
-  constructor(private http: HttpClient, private authService: AuthService, private router: Router) {}
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router) {
+  }
 
   login() {
-    this.http.post<Auth>("http://127.0.0.1:5000/login", {
+    this.http.post<Auth>("http://127.0.0.1:8000/login", {
       username: this.username,
       password: this.password
-    }, {reportProgress: true, observe: 'response'}).subscribe(event => {
-      if (event.status === 200) {
-        this.authService.setUserData(JSON.stringify(event.body!));
-        this.router.navigate(["/planned-tasks"]);
-      } else if (event.status === 403) {
-        this.errorMessage = event.body!.details!;
-      } else {
-        this.errorMessage = "Виникла певна помилка!";
-      }
     })
+      .subscribe({
+        next: (auth) => {
+            this.authService.setUserData(JSON.stringify(auth));
+            this.router.navigate(["/planned-tasks"]);
+        },
+        error: (err) => {this.errorMessage = err}
+      })
   }
 }

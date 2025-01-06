@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import {AuthService} from './auth.service';
 import {NgIf} from '@angular/common';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {AuthInterceptor} from './auth.interceptor';
 
 @Component({
     selector: 'todo-app',
@@ -13,7 +15,7 @@ import {NgIf} from '@angular/common';
         RouterLink,
         RouterLinkActive,
         NgIf
-    ],
+    ]
 })
 export class AppComponent {
   public userData: {access: string, username: string} | null = null;

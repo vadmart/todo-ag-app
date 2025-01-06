@@ -11,12 +11,14 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService, private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = this.authService.getUserData();
+    console.log("Interceptor is working now!");
+    const userDataString = this.authService.getUserData();
 
-    if (token) {
+    if (userDataString) {
+      const userData = JSON.parse(userDataString);
       req = req.clone({
         setHeaders: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${userData.access}`
         }
       });
     }

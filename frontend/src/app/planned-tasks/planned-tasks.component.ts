@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor, DatePipe } from '@angular/common';
-import { TasksListService } from '../tasks-list.service';
+import { TasksService } from '../tasks.service';
+import Task from '../task.type';
 
 @Component({
   selector: 'app-planned-tasks',
@@ -20,24 +21,40 @@ export class PlannedTasksComponent {
   protected currentDate = new Date();
 
   public enteredName: string = "";
-  public enteredDescription: string = "";
   public selectedDate: string = "";
+  public tasks: Task[] = [];
 
-  constructor (private tasksListService: TasksListService) {}
+  constructor (private tasksListService: TasksService) {
+    this.getTasks();
+  }
 
-  get plannedTasks() {
-    return this.tasksListService.tasks.filter(task => task.completed === false);
+  getTasks() {
+    this.tasksListService.getPlannedTasks().subscribe({next: (tasks) => {
+      tasks.map(task => task.deadline = new Date(task.deadline));
+      this.tasks.push(...tasks);
+    },
+    error: (e) => console.error(e)})
   }
 
   public addTask() {
-    this.tasksListService.addTask(this.enteredName, new Date(this.selectedDate), this.enteredDescription);
+    this.tasksListService.addTask(this.enteredName, new Date(this.selectedDate)).subscribe({next: (task) => {
+      task.deadline = new Date(task.deadline)
+      this.tasks.push(task);
+      }})
   }
 
-  public removeTask(id: string) {
-    this.tasksListService.removeTask(id);
+  public removeTask(id: number) {
+    this.tasksListService.removeTask(id).subscribe({next: (task) => {
+        this.tasks = this.tasks.filter(tsk => tsk.id !== task.id);
+      }})
   }
 
-  public markTaskAsCompleted(id: string) {
-    this.tasksListService.markTaskAsCompleted(id);
+  public markTaskAsCompleted(ev: Event, id: number) {
+    const checkbox = ev.target as HTMLInputElement;
+    if (checkbox.checked) {
+      this.tasksListService.markTaskAsCompleted(id).subscribe({next: (task) => {
+        this.tasks = this.tasks.filter(tsk => tsk.id !== task.id)
+        }})
+    }
   }
 }

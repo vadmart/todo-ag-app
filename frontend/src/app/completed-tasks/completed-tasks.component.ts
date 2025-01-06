@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { TasksListService } from '../tasks-list.service';
+import { TasksService } from '../tasks.service';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor, DatePipe} from '@angular/common';
+import Task from '../task.type';
 
 @Component({
   selector: 'app-completed-tasks',
@@ -16,42 +17,53 @@ import { NgIf, NgFor, DatePipe} from '@angular/common';
 ]
 })
 export class CompletedTasksComponent {
-  public tasksIdsForDeletion: string[] = [];
+  public completedTasks: Task[] = []
+  public selectedTasksIdsForDeletion: number[] = [];
 
-  constructor (private tasksListService: TasksListService) {}
-
-  get completedTasks() {
-    return this.tasksListService.tasks.filter(task => task.completed === true);
+  constructor (private tasksListService: TasksService) {
+    this.getCompletedTasks();
   }
 
-  public deleteCompletedTasks() {
-    this.tasksListService.deleteCompletedTasks();
+  public getCompletedTasks() {
+    this.tasksListService.getCompletedTasks().subscribe({next: (tasks) => {
+        tasks.map(tsk => {
+          tsk.deadline = new Date(tsk.deadline)
+          this.completedTasks.push(tsk);
+        });
+      }})
   }
 
-  public addSelectedTaskId (id: string) {
-    this.tasksIdsForDeletion.push(id);
+  public deleteSelectedCompletedTasks() {
+    this.tasksListService.deleteCompletedTasks(this.selectedTasksIdsForDeletion).subscribe({next: tasks => {
+        tasks.map(tsk => {
+          this.completedTasks = this.completedTasks.filter(val => val.id !== tsk.id);
+        })
+        this.selectedTasksIdsForDeletion = [];
+      }})
   }
 
-  public removeSelectedTaskId(id: string) {
-    this.tasksIdsForDeletion = this.tasksIdsForDeletion.filter(taskId => taskId !== id);
+  public deleteAllCompletedTasks() {
+    this.tasksListService.deleteCompletedTasks().subscribe({next: () => {
+      this.completedTasks = []
+      this.selectedTasksIdsForDeletion = [];
+    }})
   }
 
-  public onCheckboxChange(event: Event, taskId: string) {
+  public onCheckboxChange(event: Event, taskId: number) {
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) {
-      this.addSelectedTaskId(taskId);
+      this.selectedTasksIdsForDeletion.push(taskId);
     } else {
-      this.removeSelectedTaskId(taskId);
+      this.selectedTasksIdsForDeletion = this.selectedTasksIdsForDeletion.filter(val => val !== taskId);
     }
   }
 
-  public removeSelectedTasks() {
-    this.tasksListService.removeSelectedTasksByIds(this.tasksIdsForDeletion);
-    this.tasksIdsForDeletion.length = 0;
-  }
+  // public removeSelectedTasks() {
+  //   this.tasksListService.removeSelectedTasksByIds(this.tasksIdsForDeletion);
+  // }
 
-  get isAnyTaskSelected() {
-    return this.tasksIdsForDeletion.length > 0
-  }
+  // get isAnyTaskSelected() {
+  //   return this.tasksIdsForDeletion.length > 0
+  // }
 
 }

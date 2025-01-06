@@ -23,7 +23,7 @@ export class AuthSignupComponent {
   constructor(private http: HttpClient) {}
 
   register() {
-    this.http.post<{message: string}>("http://127.0.0.1:5000/register", {
+    this.http.post<{message: string}>("http://127.0.0.1:8000/register", {
       username: this.username,
       password: this.password
     }).subscribe(data => {
