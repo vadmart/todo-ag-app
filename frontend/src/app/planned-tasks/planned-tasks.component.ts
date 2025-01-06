@@ -30,8 +30,11 @@ export class PlannedTasksComponent {
 
   getTasks() {
     this.tasksListService.getPlannedTasks().subscribe({next: (tasks) => {
-      tasks.map(task => task.deadline = new Date(task.deadline));
-      this.tasks.push(...tasks);
+      tasks.map(task => {
+        task.deadline = new Date(task.deadline);
+        this.tasks.push(task)
+      });
+      this.tasks.sort((task1, task2) => task1.deadline.getTime() - task2.deadline.getTime());
     },
     error: (e) => console.error(e)})
   }
@@ -40,6 +43,7 @@ export class PlannedTasksComponent {
     this.tasksListService.addTask(this.enteredName, new Date(this.selectedDate)).subscribe({next: (task) => {
       task.deadline = new Date(task.deadline)
       this.tasks.push(task);
+      this.tasks.sort((task1, task2) => task1.deadline.getTime() - task2.deadline.getTime());
       }})
   }
 

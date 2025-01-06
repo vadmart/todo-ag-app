@@ -30,6 +30,7 @@ export class CompletedTasksComponent {
           tsk.deadline = new Date(tsk.deadline)
           this.completedTasks.push(tsk);
         });
+        this.completedTasks.sort((task1, task2) => task1.deadline.getTime() - task2.deadline.getTime());
       }})
   }
 
