@@ -19,6 +19,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 export class AuthSignupComponent {
   public username: string = "";
   public password: string = "";
+  public errorMessage: string = "";
 
   constructor(private http: HttpClient) {}
 
@@ -26,8 +27,9 @@ export class AuthSignupComponent {
     this.http.post<{message: string}>("http://127.0.0.1:8000/register", {
       username: this.username,
       password: this.password
-    }).subscribe(data => {
-      alert(data);
-    });
+    }).subscribe({error: err => {
+        this.errorMessage = err;
+        console.log(this.errorMessage);
+      }});
   }
 }

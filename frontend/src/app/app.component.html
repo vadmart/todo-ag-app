@@ -1,6 +1,6 @@
 <div class="container-fluid vh-100 todo-container">
   <div class="row">
-    <nav class="col-lg-3 bg-light p-3">
+    <nav class="col-lg-2 bg-light p-3">
       <ul class="list-unstyled">
         <li><a class="btn btn-default text-warning menu-button"
                 id="button__new_task"
@@ -12,8 +12,8 @@
                 routerLinkActive="active">Виконані задачі</a></li>
         <li>
           <ng-container *ngIf="!!userData;else container__no_auth">
-            <div class="border-top border-warning-subtle menu-item d-flex justify-content-center align-items-center">
-              <span>{{userData.username}}</span>
+            <div class="menu-item d-flex justify-content-between align-items-center bg-warning mt-3 border rounded w-75 p-2">
+              <span>👤 {{userData.username}}</span>
               <a class="btn text-primary"
                   id="button__sign-out" (click)="logout()">Вихід</a>
             </div>
@@ -31,7 +31,7 @@
         </li>
       </ul>
     </nav>
-    <main class="col-lg-9 p-4">
+    <main class="col-lg-10 p-4">
       <router-outlet></router-outlet>
     </main>
   </div>

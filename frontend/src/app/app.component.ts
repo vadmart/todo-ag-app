@@ -18,13 +18,15 @@ import {AuthInterceptor} from './auth.interceptor';
     ]
 })
 export class AppComponent {
-  public userData: {access: string, username: string} | null = null;
 
-  constructor(private authService: AuthService) {
-    const receivedData = this.authService.getUserData();
-    if (receivedData) {
-      this.userData = JSON.parse(receivedData);
+  constructor(private authService: AuthService) {}
+
+  get userData() {
+    const userData = this.authService.getUserData();
+    if (userData) {
+      return JSON.parse(userData);
     }
+    return userData
   }
 
   logout() {
